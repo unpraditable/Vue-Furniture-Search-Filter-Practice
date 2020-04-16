@@ -3,9 +3,20 @@
     <header>
       <div class="container">
         <div class="row search-row">
-          <div class="col-md-6">
-            <input class="search-box" type="text" v-model="search" placeholder="Search Furniture" />
-
+          <input class="search-box" type="text" v-model="search" placeholder="Search Furniture" />
+        </div>
+        <div class="row filter-row">
+          <div class="dropdown-check-list" tabindex="100">
+            <span class="anchor">Furniture Style</span>
+            <ul class="list-unstyled items">
+              <li v-for="furnitureStyle in furnitureStyles">
+                <label class="flex-checkbox">
+                  <span class="title">{{furnitureStyle}}</span>
+                  <input class="checkbox" type="checkbox" :value="furnitureStyle" v-model="checkedFurnitureStyles">
+                  <span class="checkmark"></span>
+                </label>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -14,7 +25,6 @@
       <div class="container">
             <Furnitures v-if="!search" :furnitures="furnitures" />
             <Furnitures v-if="search" :furnitures="searchFurniture" />
-
       </div>
     </div>
   </div>
@@ -35,16 +45,17 @@
         search: '',
         filter: false,
         furnitures: [],
+        furnitureStyles: [],
       }
     },
 
     //Fetch products and styles
     created() {
-
       axios.get(apiUrl)
         .then(response => {
           // JSON responses are automatically parsed.
-          this.furnitures = response.data.products
+          this.furnitures = response.data.products;
+          this.furnitureStyles = response.data.furniture_styles
           let furnitures = this.furnitures;
           //limit character for description & add "." separator for price
           for (let i = 0; i < furnitures.length; i++) {
@@ -57,7 +68,19 @@
         
     },
     mounted() {
-     
+     var checkList = document.querySelectorAll('.dropdown-check-list');
+      for (let i = 0; i < checkList.length; i++) {
+        checkList[i].querySelector('.anchor').onclick = function () {
+          var items = checkList[i].querySelector('.items');
+          if (items.classList.contains('visible')) {
+            items.classList.remove('visible');
+            items.style.display = "none";
+          } else {
+            items.classList.add('visible');
+            items.style.display = "block";
+          }
+        }
+      }
     },
     computed: {
       searchFurniture() {
@@ -65,7 +88,7 @@
           .filter(furniture =>
             furniture.name.toLowerCase().includes(this.search.toLowerCase())
           )
-      },
+      }
     }
   }
 </script>
