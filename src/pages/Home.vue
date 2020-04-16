@@ -12,7 +12,9 @@
     </header>
     <div class="content">
       <div class="container">
-            <Furnitures :furnitures="furnitures" />
+            <Furnitures v-if="!search" :furnitures="furnitures" />
+            <Furnitures v-if="search" :furnitures="searchFurniture" />
+
       </div>
     </div>
   </div>
@@ -49,5 +51,13 @@
     mounted() {
       
     },
+    computed: {
+      searchFurniture() {
+        return this.furnitures
+          .filter(furniture =>
+            furniture.name.toLowerCase().includes(this.search.toLowerCase())
+          )
+      },
+    }
   }
 </script>
