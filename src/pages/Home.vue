@@ -45,11 +45,19 @@
         .then(response => {
           // JSON responses are automatically parsed.
           this.furnitures = response.data.products
+          let furnitures = this.furnitures;
+          //limit character for description & add "." separator for price
+          for (let i = 0; i < furnitures.length; i++) {
+            //limit character
+            furnitures[i].description = furnitures[i].description.substring(0, 114) + "...";
+            //add "." separator
+            furnitures[i].price = furnitures[i].price.toLocaleString("id-ID")
+          }
         })
         
     },
     mounted() {
-      
+     
     },
     computed: {
       searchFurniture() {
