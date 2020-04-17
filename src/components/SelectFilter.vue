@@ -8,9 +8,9 @@
 
                 <span v-if="isDeliveryTime" class="title">{{model.title}}</span>
 
-                <input v-if="!isDeliveryTime" class="checkbox" type="checkbox" :value="model">
+                <input v-if="!isDeliveryTime" class="checkbox" type="checkbox" :value="model" v-model="checked">
 
-                <input v-if="isDeliveryTime" class="checkbox" type="checkbox" :value="{max: model.maxValue, min: model.minValue}">
+                <input v-if="isDeliveryTime" class="checkbox" type="checkbox" :value="{max: model.maxValue, min: model.minValue}" v-model="checked">
 
                 <span class="checkmark"></span>
             </label>
@@ -23,6 +23,6 @@
 
 export default {
   name: 'SelectFilter',
-  props: ["title", "models", "isDeliveryTime"]
+  props: ["title", "models", "isDeliveryTime", "checked"]
 }
 </script>

@@ -7,29 +7,43 @@
         </div>
         <div class="row filter-row">
 
-          <SelectFilter title='Furniture Style' :models="furnitureStyles" />
+            <div class="dropdown-check-list" tabindex="100">
+              <span class="anchor">Furniture Style</span>
+              <ul class="list-unstyled items">
+                <li v-for="furnitureStyle in furnitureStyles">
+                  <label class="flex-checkbox">
+                    <span class="title">{{furnitureStyle}}</span>
+                    <input class="checkbox" type="checkbox" :value="furnitureStyle" v-model="checkedFurnitureStyles">
+                    <span class="checkmark"></span>
 
-          <SelectFilter title='Time Delivery' :models="deliveryTimes" isDeliveryTime=true />
+                  </label>
 
-          <!-- <div class="dropdown-check-list">
+                </li>
+              </ul>
+            </div>
+
+            <div class="dropdown-check-list" tabindex="100">
               <span class="anchor">Time Delivery</span>
               <ul class="list-unstyled items">
                 <li v-for="deliveryTime in deliveryTimes">
                   <label class="flex-checkbox">
                     <span class="title">{{deliveryTime.title}}</span>
                     <input class="checkbox" type="checkbox"
-                      :value="{max: deliveryTime.maxValue, min: deliveryTime.minValue}">
+                      :value="{max: deliveryTime.maxValue, min: deliveryTime.minValue}" v-model="checkedDeliveryTimes">
                     <span class="checkmark"></span>
                   </label>
                 </li>
               </ul>
-          </div> -->
+            </div>
+
+
         </div>
       </div>
     </header>
     <div class="content">
       <div class="container">
-            <Furnitures v-if="!search" :furnitures="furnitures" />
+            <Furnitures v-if="!filter && !search" :furnitures="furnitures" />
+            <Furnitures v-if="filter && !search" :furnitures="filteredFurnitures" />
             <Furnitures v-if="search" :furnitures="searchFurniture" />
       </div>
     </div>
@@ -75,6 +89,8 @@
             minValue: 32
           },
         ],
+        checkedFurnitureStyles: [],
+        checkedDeliveryTimes: []
       }
     },
 
@@ -125,8 +141,55 @@
           )
       }
     },
-    methods: {
+    watch: {
+      checkedFurnitureStyles: {
+        handler() {
+          if(!this.checkedFurnitureStyles.length) {
+            this.filter = false; 
+          } else {
+            this.filter = true;
+          }
+          let newArray = [];
+          let furnitures = "";
+          if(this.search) {
+            furnitures = this.searchFurniture;
+          } else {
+            furnitures = this.furnitures;
+          }
+          for (let i = 0; i < furnitures.length; i++) {
+            if (furnitures[i].furniture_style.some(style => this.checkedFurnitureStyles.indexOf(style) !== -1)) {
+              newArray.push(furnitures[i]);
+            }
+          }
+          this.filteredFurnitures = newArray;
+        }
+      },
+      checkedDeliveryTimes: {
+        handler() {
+          if(!this.checkedDeliveryTimes.length) {
+            this.filter = false; 
+          } else {
+            this.filter = true;
+          }
+          let newArray = [];
+          let furnitures = "";
+          if(this.search) {
+            furnitures = this.searchFurniture;
+          } else {
+            furnitures = this.furnitures;
+          }
+         for (let i = 0; i < furnitures.length; i++) {
+            for (let j = 0; j < this.checkedDeliveryTimes.length; j++) {
+              if (parseInt(furnitures[i].delivery_time) <= this.checkedDeliveryTimes[j].max && this
+                .checkedDeliveryTimes[j].min < furnitures[i].delivery_time) {
+                newArray.push(furnitures[i]);
+              }
+            }
 
+          }
+          this.filteredFurnitures = newArray;
+        }
+      },
     }
   }
 </script>
