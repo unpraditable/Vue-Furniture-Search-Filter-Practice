@@ -7,32 +7,23 @@
         </div>
         <div class="row filter-row">
 
-          <div class="dropdown-check-list" @click="openFilter">
-            <span class="anchor">Furniture Style</span>
-            <ul class="list-unstyled items">
-              <li v-for="furnitureStyle in furnitureStyles">
-                <label class="flex-checkbox">
-                  <span class="title">{{furnitureStyle}}</span>
-                  <input class="checkbox" type="checkbox" :value="furnitureStyle" v-model="checkedFurnitureStyles">
-                  <span class="checkmark"></span>
-                </label>
-              </li>
-            </ul>
-          </div>
+          <SelectFilter title='Furniture Style' :models="furnitureStyles" />
 
-          <div class="dropdown-check-list" @click="openFilter">
+          <SelectFilter title='Time Delivery' :models="deliveryTimes" isDeliveryTime=true />
+
+          <!-- <div class="dropdown-check-list">
               <span class="anchor">Time Delivery</span>
               <ul class="list-unstyled items">
                 <li v-for="deliveryTime in deliveryTimes">
                   <label class="flex-checkbox">
                     <span class="title">{{deliveryTime.title}}</span>
                     <input class="checkbox" type="checkbox"
-                      :value="{max: deliveryTime.maxValue, min: deliveryTime.minValue}" v-model="checkedDeliveryTimes">
+                      :value="{max: deliveryTime.maxValue, min: deliveryTime.minValue}">
                     <span class="checkmark"></span>
                   </label>
                 </li>
               </ul>
-            </div>
+          </div> -->
         </div>
       </div>
     </header>
@@ -48,18 +39,21 @@
 <script>
   import axios from 'axios';
   import Furnitures from '@/components/Furnitures.vue';
+  import SelectFilter from '@/components/SelectFilter.vue';
   const apiUrl = "https://www.mocky.io/v2/5c9105cb330000112b649af8";
 
   export default {
     name: 'Home',
     components: {
-      Furnitures
+      Furnitures,
+      SelectFilter
     },
     data() {
       return {
         search: '',
         filter: false,
         furnitures: [],
+        filteredFurnitures: [],
         furnitureStyles: [],
         deliveryTimes: [{
             title: "1 Week",
@@ -119,6 +113,12 @@
     },
     computed: {
       searchFurniture() {
+        let furnitures = "";
+        if(this.filter) {
+          furnitures = this.filteredFurnitures;
+        } else {
+          furnitures = this.furnitures;
+        }
         return this.furnitures
           .filter(furniture =>
             furniture.name.toLowerCase().includes(this.search.toLowerCase())
@@ -126,19 +126,7 @@
       }
     },
     methods: {
-        openFilter: function (event) {
 
-        let checkList = event.target;
-        let items = checkList.querySelector('.items');
-        if (items.classList.contains('visible')) {
-          items.classList.remove('visible');
-          items.style.display = "none";
-        } else {
-          items.classList.add('visible');
-          items.style.display = "block";
-        }
-
-      }
     }
   }
 </script>
