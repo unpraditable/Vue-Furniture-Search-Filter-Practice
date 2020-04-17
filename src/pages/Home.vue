@@ -6,7 +6,8 @@
           <input class="search-box" type="text" v-model="search" placeholder="Search Furniture" />
         </div>
         <div class="row filter-row">
-          <div class="dropdown-check-list" tabindex="100">
+
+          <div class="dropdown-check-list" @click="openFilter">
             <span class="anchor">Furniture Style</span>
             <ul class="list-unstyled items">
               <li v-for="furnitureStyle in furnitureStyles">
@@ -18,6 +19,20 @@
               </li>
             </ul>
           </div>
+
+          <div class="dropdown-check-list" @click="openFilter">
+              <span class="anchor">Time Delivery</span>
+              <ul class="list-unstyled items">
+                <li v-for="deliveryTime in deliveryTimes">
+                  <label class="flex-checkbox">
+                    <span class="title">{{deliveryTime.title}}</span>
+                    <input class="checkbox" type="checkbox"
+                      :value="{max: deliveryTime.maxValue, min: deliveryTime.minValue}" v-model="checkedDeliveryTimes">
+                    <span class="checkmark"></span>
+                  </label>
+                </li>
+              </ul>
+            </div>
         </div>
       </div>
     </header>
@@ -46,6 +61,26 @@
         filter: false,
         furnitures: [],
         furnitureStyles: [],
+        deliveryTimes: [{
+            title: "1 Week",
+            maxValue: 7,
+            minValue: 0,
+          },
+          {
+            title: "2 Weeks",
+            maxValue: 14,
+            minValue: 8
+          },
+          {
+            title: "1 Month",
+            maxValue: 28,
+            minValue: 15
+          },
+          {
+            title: "& more",
+            minValue: 32
+          },
+        ],
       }
     },
 
@@ -68,7 +103,7 @@
         
     },
     mounted() {
-     var checkList = document.querySelectorAll('.dropdown-check-list');
+      var checkList = document.querySelectorAll('.dropdown-check-list');
       for (let i = 0; i < checkList.length; i++) {
         checkList[i].querySelector('.anchor').onclick = function () {
           var items = checkList[i].querySelector('.items');
@@ -88,6 +123,21 @@
           .filter(furniture =>
             furniture.name.toLowerCase().includes(this.search.toLowerCase())
           )
+      }
+    },
+    methods: {
+        openFilter: function (event) {
+
+        let checkList = event.target;
+        let items = checkList.querySelector('.items');
+        if (items.classList.contains('visible')) {
+          items.classList.remove('visible');
+          items.style.display = "none";
+        } else {
+          items.classList.add('visible');
+          items.style.display = "block";
+        }
+
       }
     }
   }

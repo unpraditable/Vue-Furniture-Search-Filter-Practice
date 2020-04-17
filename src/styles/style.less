@@ -62,7 +62,7 @@ header {
     padding: 10px 0;
 
     .search-box {
-        padding: 5px 0;
+        padding: 10px 0;
         width: 100%;
         background: transparent;
         border: none;
@@ -186,16 +186,19 @@ label.flex-checkbox {
 }
 
 .filter-row{
-    margin-top: 15px;
     display: grid;
     grid-template-columns: 1fr 1fr;
+    grid-column-gap: 10px;
+    @media only screen and (max-width: 768px) {
+        grid-template-columns: 1fr;
+    }
 }
 
 .dropdown-check-list {
-    display: inline-block;
+    display: inline-table;
     background: white;
     padding: 7px 15px;
-
+    margin-top: 15px;
     .anchor {
         position: relative;
         cursor: pointer;
@@ -224,8 +227,10 @@ label.flex-checkbox {
     }
 
     .items {
+        // padding: 10px 15px;
         display: none;
         margin: 0;
+        // border: 1px solid #ccc;
         border-top: none;
 
         li {
@@ -255,7 +260,7 @@ label.flex-checkbox {
         height: 20px;
         width: 20px;
         background-color: white;
-        border-radius: 5px;
+        border-radius: 3px;
         border: 1px solid lightgray;
     }
 
